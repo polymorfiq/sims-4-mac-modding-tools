@@ -20,10 +20,8 @@ class PackageFileReader:
         self.open()
 
         try:
-            (headers, index_start_pos) = self.get_headers()
-            self.package.headers = headers
-
-            self.package.index_entries = self.get_index_entries(index_start_pos)
+            self.package.headers = self.get_headers()
+            self.package.index_entries = self.get_index_entries(self.package.headers.after_flags_pos())
             self.package.records = self.get_records()
 
         finally:
@@ -68,10 +66,10 @@ class PackageFileReader:
 
         headers.unused5 = struct.unpack('<IIIIII', self.file_contents[72:96])
 
-        indexPos = headers.mnIndexRecordPosition if headers.mnIndexRecordPosition != 0 else headers.mnIndexRecordPositionLow
+        index_pos = headers.index_pos()
+        flag_data = struct.unpack('<I', self.file_contents[index_pos:index_pos+4])[0]
 
-        flag_data = struct.unpack('<I', self.file_contents[indexPos:indexPos+4])[0]
-
+        after_flags = index_pos + 4
         headers.flags = PackageFlags(
             constantType        = (flag_data & 0b00000000000000000000000000000001),
             constantGroup       = (flag_data & 0b00000000000000000000000000000010) >> 1,
@@ -79,7 +77,6 @@ class PackageFileReader:
             reserved            = (flag_data & 0b11111111111111111111111111111000) >> 3
         )
 
-        after_flags = indexPos+4
         if headers.flags.constantType != 0:
             headers.flags.constantTypeId = struct.unpack('<I', self.file_contents[after_flags:after_flags+4])[0]
             after_flags += 4
@@ -92,7 +89,7 @@ class PackageFileReader:
             headers.flags.constantInstanceIdEx = struct.unpack('<I', self.file_contents[after_flags:after_flags+4])[0]
             after_flags += 4
 
-        return (headers, after_flags)
+        return headers
 
     def get_index_entries(self, indices_start_pos):
         index_entries = []
@@ -102,13 +99,14 @@ class PackageFileReader:
         for i in range(headers.mnIndexRecordEntryCount):
             index_entry = PackageIndexEntry(self.package.headers.flags)
 
-            entry_size = index_entry.size()
             start_pos = indices_start_pos + curr_entry_offset
-            end_pos = start_pos + entry_size
+            end_pos = start_pos + index_entry.size()
+            end_pos += 4 # We may or may not need extra bytes if mbExtendedCompressionType = 1
 
             index_entry.read(self.file_contents[start_pos:end_pos])
             index_entries.append(index_entry)
 
+            entry_size = index_entry.size()
             curr_entry_offset += entry_size
 
         return index_entries

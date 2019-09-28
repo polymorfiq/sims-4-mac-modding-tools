@@ -1,6 +1,6 @@
 import struct
 from .constants import COMPRESSION_TYPES
-from .helpers import to_hex
+from .helpers import pad_bytes_start, compression_type_by_name
 
 class PackageIndexEntry:
     def __init__(self, flags):
@@ -24,6 +24,37 @@ class PackageIndexEntry:
         # if mbExtendedCompressionType = 1
         self.mnCompressionType = None
         self.mnCommitted =  None # typically 1
+
+    def load_resource(self, resource_type, resource_group, resource_instance_id, uncompressed_data, compressed_data):
+
+        # Expects data in big-endian format
+        self.mType = struct.unpack('>I', pad_bytes_start(resource_type, 4))[0]
+        self.mGroup = struct.unpack('>I', pad_bytes_start(resource_group, 4))[0]
+        self.mInstanceEx = struct.unpack('>I', pad_bytes_start(resource_instance_id[:4], 4))[0]
+        self.mInstance = struct.unpack('>I', pad_bytes_start(resource_instance_id[4:8], 4))[0]
+
+        self.mnSize = len(compressed_data)
+        self.mnSizeDecompressed = len(uncompressed_data)
+
+    def to_bytearray(self):
+        raw_data = bytearray([])
+
+        if self.flags.constantType == 0: raw_data.extend(struct.pack('<I', self.mType))
+        if self.flags.constantGroup == 0: raw_data.extend(struct.pack('<I', self.mGroup))
+        if self.flags.constantInstanceEx == 0: raw_data.extend(struct.pack('<I', self.mInstanceEx))
+
+        raw_data.extend(struct.pack('<I', self.mInstance))
+        raw_data.extend(struct.pack('<I', self.mnPosition))
+
+        data_desc = self.mnSize | (self.mbExtendedCompressionType << 31)
+        raw_data.extend(struct.pack('<I', data_desc))
+        raw_data.extend(struct.pack('<I', self.mnSizeDecompressed))
+
+        if self.mbExtendedCompressionType == 1:
+            raw_data.extend(struct.pack('<H', compression_type_by_name(self.mnCompressionType)))
+            raw_data.extend(struct.pack('<H', self.mnCommitted))
+
+        return raw_data
 
     def read(self, entry_data, debug = False):
         start_pos = 0
@@ -62,7 +93,7 @@ class PackageIndexEntry:
 
     def size(self):
         # Base size, regardless of flags
-        total_size = 20
+        total_size = 16
 
         if self.flags.constantType == 0: total_size += 4
         if self.flags.constantGroup == 0: total_size += 4
@@ -75,21 +106,21 @@ class PackageIndexEntry:
         return f"{self.type_id()}_{self.group_id()}_{self.instance_id()}"
 
     def type_id(self):
-        return to_hex(self.mType)
+        return hex(self.mType)
 
     def group_id(self):
-        return to_hex(self.mGroup)
+        return hex(self.mGroup)
 
     def instance_id(self):
         return "0x{:02x}".format(self.mInstanceEx) + "{:02x}".format(self.mInstance)
 
     def __str__(self):
         return ("PackageIndexEntry:\n" +
-            f"  mType: " + to_hex(self.mType) + "\n" +
-            f"  mGroup: " + to_hex(self.mGroup) + "\n" +
-            f"  mInstanceEx: " + to_hex(self.mInstanceEx) + "\n" +
+            f"  mType: " + hex(self.mType) + "\n" +
+            f"  mGroup: " + hex(self.mGroup) + "\n" +
+            f"  mInstanceEx: " + hex(self.mInstanceEx) + "\n" +
             f"  Instance ID: " + self.instance_id() + "\n" +
-            f"  mInstance: " + to_hex(self.mInstance) + "\n" +
+            f"  mInstance: " + hex(self.mInstance) + "\n" +
             f"  mnPosition: {self.mnPosition}\n" +
             f"  mnSize: {self.mnSize}\n" +
             f"  mbExtendedCompressionType: {self.mbExtendedCompressionType}\n" +

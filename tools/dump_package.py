@@ -5,7 +5,6 @@ from package_parser import PackageFileReader
 from package_parser import resource_type_by_name
 
 EXAMPLE_PACKAGE = '../Documentation/TS4_Custom_Content_Guide/Examples/simsmodsquad-novelist.package'
-
 package_path = sys.argv[1] if len(sys.argv) >= 2 else EXAMPLE_PACKAGE
 
 SIMDATA_TYPE = resource_type_by_name('simdata')
@@ -51,15 +50,27 @@ class PackageDumper:
 
             elif index.mType in XML_TYPES:
                 parsed = etree.XML(record)
-                name = parsed.xpath("/I")[0].attrib['n']
-                pretty = etree.tostring(parsed, pretty_print=True, xml_declaration=True, encoding='utf-8')
-                PackageDumper.dump_resource('xml', index, pretty, extension="xml", name=name)
+
+                name = None
+                root_elem = parsed.xpath("/I")
+                if len(root_elem) == 0: root_elem = parsed.xpath("/Instance")
+                if len(root_elem) == 0: root_elem = parsed.xpath("/M")
+                if len(root_elem) == 0: root_elem = parsed.xpath("/Module")
+                if len(root_elem) == 0: root_elem = parsed.xpath("/ASM")
+                if len(root_elem) > 0 and 'n' in root_elem[0].attrib:
+                    name = root_elem[0].attrib['n']
+
+                if len(root_elem) > 0 and 'name' in root_elem[0].attrib:
+                    name = root_elem[0].attrib['name']
+
+                # pretty = etree.tostring(parsed, pretty_print=True, xml_declaration=True, encoding='utf-8')
+                PackageDumper.dump_resource('xml', index, record, extension="xml", name=name)
 
             else:
                 PackageDumper.dump_resource('various', index, record)
 
     def dump_resource(subdir, index, record, extension = None, name = None):
-        filepath = f'./tmp/{subdir}/{index.id()}'
+        filepath = f'./tmp/data/{subdir}/{index.id()}'
         if name is not None: filepath += f"_{name}"
         if extension is not None: filepath += f".{extension}"
 

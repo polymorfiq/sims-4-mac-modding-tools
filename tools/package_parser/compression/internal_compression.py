@@ -1,7 +1,6 @@
 import struct
 from .constants import INTERNAL_COMPRESSION_TYPE_LARGE, INTERNAL_COMPRESSION_TYPES
 from .compression_errors import InvalidCompressionType, InvalidMagicNumber, UnknownControlCode
-from .helpers import to_hex
 
 # DBPF/Compression format described here:
 # http://modthesims.info/wiki.php?title=Sims_3:DBPF/Compression
@@ -113,8 +112,8 @@ class InternalCompression:
 
     def __str__(self):
         return ("Internal Compression: \n" +
-            f"  compression_type: {to_hex(self.compression_type)}\n" +
-            f"  magic_number: {to_hex(self.magic_number)}\n" +
+            f"  compression_type: {hex(self.compression_type)}\n" +
+            f"  magic_number: {hex(self.magic_number)}\n" +
             f"  uncompressed_size: {self.uncompressed_size}\n" +
             f"  header_size: {self.header_size}\n" +
             f"  output_size: {len(self.output)}\n\n"

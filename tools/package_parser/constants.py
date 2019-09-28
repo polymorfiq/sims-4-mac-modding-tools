@@ -8,6 +8,14 @@ COMPRESSION_TYPES = {
     0x5a42: "ZLIB"
 }
 
+COMPRESSION_TYPES_BY_NAME = {
+    "Uncompressed": 0x0000,
+    "Streamable compression": 0xfffe,
+    "Internal compression": 0xffff,
+    "Deleted record": 0xffe0,
+    "ZLIB": 0x5a42
+}
+
 RESOURCE_TYPES = {
     0x034aeecb: "Create a Sim (CAS) Catalog Instance",
     0x545ac67a: "Simdata",
