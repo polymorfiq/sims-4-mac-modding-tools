@@ -1,4 +1,4 @@
-from package_file import PackageFile
+from .package_file import PackageFile
 
 class PackageFileWriter:
     def __init__(self):

@@ -1,7 +1,11 @@
 import struct
 import datetime
-from package_file import PackageFile, PackageFileHeader, PackageVersion, PackageFlags, PackageIndexEntry
-from package_errors import InvalidFileFormat, UnexpectedHeaderUse
+from .package_file import PackageFile
+from .package_flags import PackageFlags
+from .package_index_entry import PackageIndexEntry
+from .package_version import PackageVersion
+from .package_file_header import PackageFileHeader
+from .package_errors import InvalidFileFormat, UnexpectedHeaderUse
 
 MAGIC_NUMBER = 'DBPF'
 
@@ -21,10 +25,10 @@ class PackageFileReader:
             self.package.index_entries = self.get_index_entries(after_flag_pos)
             self.package.records = self.get_records()
 
-            print(self.package)
-
         finally:
             self.close()
+
+        return self.package
 
     def get_headers(self):
         headers = PackageFileHeader()
