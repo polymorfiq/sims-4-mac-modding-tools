@@ -1,13 +1,14 @@
 import struct
 import datetime
+import zlib
 from .package_file import PackageFile
 from .package_flags import PackageFlags
 from .package_index_entry import PackageIndexEntry
 from .package_version import PackageVersion
 from .package_file_header import PackageFileHeader
-from .package_errors import InvalidFileFormat, UnexpectedHeaderUse
-
-MAGIC_NUMBER = 'DBPF'
+from .package_errors import InvalidFileFormat, UnexpectedHeaderUse, UnknownCompressionError
+from .constants import MAGIC_NUMBER
+from .compression import InternalCompression
 
 class PackageFileReader:
     def __init__(self, file_path):
@@ -19,10 +20,10 @@ class PackageFileReader:
         self.open()
 
         try:
-            (headers, after_flag_pos) = self.get_headers()
+            (headers, index_start_pos) = self.get_headers()
             self.package.headers = headers
 
-            self.package.index_entries = self.get_index_entries(after_flag_pos)
+            self.package.index_entries = self.get_index_entries(index_start_pos)
             self.package.records = self.get_records()
 
         finally:
@@ -120,7 +121,15 @@ class PackageFileReader:
         for i in range(headers.mnIndexRecordEntryCount):
             index_entry = index_entries[i]
             raw_record_data = self.file_contents[index_entry.mnPosition:index_entry.mnPosition+index_entry.mnSize]
-            records.append(raw_record_data)
+
+            decompressed_data = None
+            if index_entry.mnCompressionType == "Internal compression":
+                compression = InternalCompression()
+                decompressed_data = compression.decompress(raw_record_data)
+            else:
+                raise UnknownCompressionError()
+
+            records.append(decompressed_data)
 
         return records
 
