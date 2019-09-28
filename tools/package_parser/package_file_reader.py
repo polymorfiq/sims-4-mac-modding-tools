@@ -126,6 +126,16 @@ class PackageFileReader:
             if index_entry.mnCompressionType == "Internal compression":
                 compression = InternalCompression()
                 decompressed_data = compression.decompress(raw_record_data)
+
+            elif index_entry.mnCompressionType == "Deleted record":
+                decompressed_data = bytes([])
+
+            elif index_entry.mnCompressionType == "Uncompressed":
+                decompressed_data = raw_record_data
+
+            elif index_entry.mnCompressionType == "ZLIB":
+                decompressed_data = zlib.decompress(raw_record_data)
+
             else:
                 raise UnknownCompressionError()
 
