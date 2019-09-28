@@ -51,14 +51,16 @@ class PackageDumper:
 
             elif index.mType in XML_TYPES:
                 parsed = etree.XML(record)
+                name = parsed.xpath("/I")[0].attrib['n']
                 pretty = etree.tostring(parsed, pretty_print=True, xml_declaration=True, encoding='utf-8')
-                PackageDumper.dump_resource('xml', index, pretty, extension="xml")
+                PackageDumper.dump_resource('xml', index, pretty, extension="xml", name=name)
 
             else:
                 PackageDumper.dump_resource('various', index, record)
 
-    def dump_resource(subdir, index, record, extension = None):
+    def dump_resource(subdir, index, record, extension = None, name = None):
         filepath = f'./tmp/{subdir}/{index.id()}'
+        if name is not None: filepath += f"_{name}"
         if extension is not None: filepath += f".{extension}"
 
         PackageDumper.create_directory_if_needed(filepath)
