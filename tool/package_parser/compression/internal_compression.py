@@ -38,7 +38,7 @@ class InternalCompression:
 
         self.output = []
         while curr_offset is not None and curr_offset < len(data):
-            next_offset = self.parse_control_character(data, curr_offset, True)
+            next_offset = self.parse_control_character(data, curr_offset)
             curr_offset = next_offset
 
         return bytes(self.output)
@@ -109,8 +109,6 @@ class InternalCompression:
             self.output.append(self.output[-curr_output_text_offset])
 
         return offset + cc_length + num_plain_text
-
-
 
 
     def __str__(self):

@@ -8,7 +8,7 @@ class SimdataFileHeader:
         self.mnNumSchemas = None            # Number of schemas
 
     def __str__(self):
-        print("Simdata File Header: \n" +
+        return ("Simdata File Header: \n" +
             f"  mnFileIdentifier: {self.mnFileIdentifier}\n" +
             f"  mnVersion: {self.mnVersion}\n" +
             f"  mnTableHeaderOffset: {self.mnTableHeaderOffset}\n" +
