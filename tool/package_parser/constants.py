@@ -1,3 +1,5 @@
+MAGIC_NUMBER = 'DBPF'
+
 COMPRESSION_TYPES = {
     0x0000: "Uncompressed",
     0xfffe: "Streamable compression",

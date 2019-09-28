@@ -3,3 +3,6 @@ class InvalidFileFormat(Exception):
 
 class UnexpectedHeaderUse(Exception):
     pass
+
+class UnknownCompressionError(Exception):
+    pass
