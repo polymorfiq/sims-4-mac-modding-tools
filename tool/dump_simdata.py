@@ -15,8 +15,7 @@ class SimdataDumper:
         package = reader.parse()
 
         for (index, record) in zip(package.index_entries, package.records):
-            if index.mType == SIMDATA_TYPE:
-                SimdataDumper.dump_simdata(index, record)
+            if index.mType == SIMDATA_TYPE: SimdataDumper.dump_simdata(index, record)
 
     def dump_simdata(index, record):
         filepath = f'./tmp/simdata/{index.id()}'
