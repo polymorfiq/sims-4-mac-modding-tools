@@ -1,4 +1,5 @@
 import struct
+import binascii
 from .constants import COMPRESSION_TYPES
 from .helpers import pad_bytes_start, compression_type_by_name
 
@@ -106,13 +107,13 @@ class PackageIndexEntry:
         return f"{self.type_id()}_{self.group_id()}_{self.instance_id()}"
 
     def type_id(self):
-        return hex(self.mType)
+        return '0x' + binascii.b2a_hex(struct.pack('>I', self.mType)).decode('ascii')
 
     def group_id(self):
-        return hex(self.mGroup)
+        return '0x' + binascii.b2a_hex(struct.pack('>I', self.mGroup)).decode('ascii')
 
     def instance_id(self):
-        return "0x{:02x}".format(self.mInstanceEx) + "{:02x}".format(self.mInstance)
+        return '0x' + binascii.b2a_hex(struct.pack('>I', self.mInstanceEx)).decode('ascii') + binascii.b2a_hex(struct.pack('>I', self.mInstance)).decode('ascii')
 
     def __str__(self):
         return ("PackageIndexEntry:\n" +

@@ -29,13 +29,12 @@ class PackageFileWriter:
         self.record_data = bytearray([])
 
     def add_resource(self, type, group, instance_id, data):
-        # compressed_data = zlib.compress(data)
-        compressed_data = data
+        compressed_data = zlib.compress(data)
 
         index_entry = PackageIndexEntry(self.headers.flags)
         index_entry.load_resource(type, group, instance_id, data, compressed_data)
         index_entry.mbExtendedCompressionType = 1
-        index_entry.mnCompressionType = "Uncompressed"
+        index_entry.mnCompressionType = "ZLIB"
         index_entry.mnCommitted = 1
 
         index_entry.mnPosition = self.headers.size() + len(self.record_data)
