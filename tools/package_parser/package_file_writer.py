@@ -38,8 +38,6 @@ class PackageFileWriter:
         index_entry.mnCompressionType = "Uncompressed"
         index_entry.mnCommitted = 1
 
-        print(compressed_data)
-
         index_entry.mnPosition = self.headers.size() + len(self.record_data)
         self.record_data.extend(compressed_data)
 
@@ -64,16 +62,8 @@ class PackageFileWriter:
         raw_data.extend(self.record_data)
         raw_data.extend(self.headers.flags.to_bytearray())
 
-        i = 0
         for index_entry in self.index_entries:
             raw_data.extend(index_entry.to_bytearray())
-
-            if i == 0:
-                print(index_entry.to_bytearray())
-
-            i += 1
-
-        print(raw_data[self.headers.mnIndexRecordPosition:self.headers.mnIndexRecordPosition+4])
 
         with open(self.package_path, 'w+b') as f:
             f.write(raw_data)

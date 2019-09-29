@@ -23,7 +23,7 @@ class PackageFileHeader:
         self.unused3 = (0, 0, 0)
 
         # Always 3 for historical purposes
-        self.unused4 = 0
+        self.unused4 = 3
 
         self.mnIndexRecordPosition = None
         self.unused5 = (0, 0, 0, 0, 0, 0)
