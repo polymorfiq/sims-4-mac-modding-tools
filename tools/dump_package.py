@@ -63,6 +63,9 @@ class PackageDumper:
                 if len(root_elem) > 0 and 'name' in root_elem[0].attrib:
                     name = root_elem[0].attrib['name']
 
+                if name is not None:
+                    name = name.replace('/', '-')
+
                 # pretty = etree.tostring(parsed, pretty_print=True, xml_declaration=True, encoding='utf-8')
                 PackageDumper.dump_resource('xml', index, record, extension="xml", name=name)
 
