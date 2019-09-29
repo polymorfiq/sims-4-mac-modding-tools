@@ -19,11 +19,13 @@ COMPRESSION_TYPES_BY_NAME = {
 RESOURCE_TYPES = {
     0x034aeecb: "Create a Sim (CAS) Catalog Instance",
     0x545ac67a: "Simdata",
-    0x738e6c56: "Topic"
+    0x738e6c56: "Topic",
+    0x220557da: "StringTable"
 }
 
 RESOURCES_TYPES_BY_NAME = {
     "cas_catalog_instance": 0x034aeecb,
     "simdata": 0x545ac67a,
-    "topic": 0x738e6c56
+    "topic": 0x738e6c56,
+    "string_table": 0x220557da
 }

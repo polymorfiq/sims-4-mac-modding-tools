@@ -3,11 +3,13 @@ import sys
 import lxml.etree as etree
 from package_parser import PackageFileReader
 from package_parser import resource_type_by_name
+from string_table_parser import StringTableReader
 
 EXAMPLE_PACKAGE = '../Documentation/TS4_Custom_Content_Guide/Examples/simsmodsquad-novelist.package'
 package_path = sys.argv[1] if len(sys.argv) >= 2 else EXAMPLE_PACKAGE
 
 SIMDATA_TYPE = resource_type_by_name('simdata')
+STRING_TABLE_TYPE = resource_type_by_name('string_table')
 XML_TYPES = [
     0x6017e896,
     0xb61de6b4,
@@ -48,6 +50,11 @@ class PackageDumper:
             if index.mType == SIMDATA_TYPE:
                 PackageDumper.dump_resource('simdata', index, record)
 
+            if index.mType == STRING_TABLE_TYPE:
+                reader = StringTableReader(None, record)
+                string_table = reader.parse()
+                PackageDumper.dump_resource('string_tables', index, record)
+
             elif index.mType in XML_TYPES:
                 parsed = etree.XML(record)
 
@@ -66,8 +73,8 @@ class PackageDumper:
                 if name is not None:
                     name = name.replace('/', '-')
 
-                # pretty = etree.tostring(parsed, pretty_print=True, xml_declaration=True, encoding='utf-8')
-                PackageDumper.dump_resource('xml', index, record, extension="xml", name=name)
+                pretty = etree.tostring(parsed, pretty_print=True, xml_declaration=True, encoding='utf-8')
+                PackageDumper.dump_resource('xml', index, pretty, extension="xml", name=name)
 
             else:
                 PackageDumper.dump_resource('various', index, record)

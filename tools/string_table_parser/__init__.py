@@ -1,0 +1,1 @@
+from .string_table_reader import StringTableReader
