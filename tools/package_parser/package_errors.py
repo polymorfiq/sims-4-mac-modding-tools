@@ -6,3 +6,6 @@ class UnexpectedHeaderUse(Exception):
 
 class UnknownCompressionError(Exception):
     pass
+
+class IncorrectFilename(Exception):
+    pass

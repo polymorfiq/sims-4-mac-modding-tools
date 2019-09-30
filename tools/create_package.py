@@ -13,27 +13,8 @@ writer = PackageFileWriter()
 
 for root, subdirs, files in os.walk(source_path):
     for filename in files:
-        parsed_filename = re.match("0x(.*?)_0x(.*?)_0x(.*?)$", filename)
-        if parsed_filename:
-            parsed_data = parsed_filename.groups()
-
-            resource_type = binascii.a2b_hex(parsed_data[0])
-            resource_group = binascii.a2b_hex(parsed_data[1])
-
-            instance_id_str = parsed_data[2].split('.')[0]
-            resource_name = None
-            parsed_instance_id = re.match("(.*?)_(.*?)$", instance_id_str)
-            if parsed_instance_id:
-                instance_id_str = parsed_instance_id.groups()[0]
-                resource_name = parsed_instance_id.groups()[1]
-
-            resource_instance_id = binascii.a2b_hex(instance_id_str)
-
-            raw_data = None
-            with open(f"{root}/{filename}", mode='rb') as f:
-                raw_data = f.read()
-
-            writer.add_resource(resource_type, resource_group, resource_instance_id, raw_data)
+        if filename.starts_with('0x'):
+            writer.add_resource_file(f"{root}/{filename}")
 
 package_data = writer.to_bytearray()
 with open(package_path, 'w+b') as f:

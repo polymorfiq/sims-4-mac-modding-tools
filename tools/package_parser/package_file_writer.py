@@ -1,9 +1,13 @@
 import zlib
+import re
+import binascii
+import struct
 from .package_file import PackageFile
 from .package_file_header import PackageFileHeader
 from .package_version import PackageVersion
 from .package_flags import PackageFlags
 from .package_index_entry import PackageIndexEntry
+from .package_errors import IncorrectFilename
 
 class PackageFileWriter:
     def __init__(self):
@@ -26,6 +30,44 @@ class PackageFileWriter:
         self.records = []
         self.record_data = bytearray([])
 
+    def add_writer(self, writer):
+        self.add_resource(
+            struct.pack('>I', writer.resource_type),
+            struct.pack('>I', writer.resource_group),
+            struct.pack('>Q', writer.resource_instance_id),
+            writer.to_bytearray()
+        )
+
+        print(self.index_entries[1])
+
+
+    def add_resource_file(self, file_path):
+        filename = file_path.split('/')[-1]
+        parsed_filename = re.match("0x(.*?)_0x(.*?)_0x(.*?)$", filename)
+        if parsed_filename:
+            parsed_data = parsed_filename.groups()
+
+            resource_type = binascii.a2b_hex(parsed_data[0])
+            resource_group = binascii.a2b_hex(parsed_data[1])
+
+            instance_id_str = parsed_data[2].split('.')[0]
+            resource_name = None
+            parsed_instance_id = re.match("(.*?)_(.*?)$", instance_id_str)
+            if parsed_instance_id:
+                instance_id_str = parsed_instance_id.groups()[0]
+                resource_name = parsed_instance_id.groups()[1]
+
+            resource_instance_id = binascii.a2b_hex(instance_id_str)
+
+            raw_data = None
+            with open(file_path, mode='rb') as f:
+                raw_data = f.read()
+
+            return self.add_resource(resource_type, resource_group, resource_instance_id, raw_data)
+        else:
+            raise IncorrectFilename()
+
+
     def add_resource(self, type, group, instance_id, data):
         compressed_data = zlib.compress(data)
 
@@ -40,7 +82,6 @@ class PackageFileWriter:
 
         self.index_entries.append(index_entry)
         self.records.append(compressed_data)
-
 
     def to_bytearray(self):
         self.headers.mnIndexRecordEntryCount = len(self.index_entries)

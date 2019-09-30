@@ -1,5 +1,5 @@
 import struct
-from .helpers import fnv32a
+from fnvhash import fnv1_32
 
 class StringTableString:
     def __init__(self):
@@ -16,10 +16,10 @@ class StringTableString:
     def read_contents(self, data):
         self.contents = data
 
-    def set_string(self, data):
-        self.mnKeyHash = fnv32a(data)
+    def set_string(self, data, name = None):
+        self.mnKeyHash = fnv1_32(data.encode('ascii')) if name is None else fnv1_32(name.encode('ascii'))
         self.mnLength = len(data)
-        self.contents = data
+        self.contents = data.encode('ascii')
 
     def contents_size(self):
         return self.mnLength
