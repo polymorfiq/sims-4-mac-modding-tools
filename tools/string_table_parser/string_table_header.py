@@ -5,7 +5,7 @@ from .string_table_errors import InvalidFileFormat
 class StringTableHeader:
     def __init__(self):
         # Should always be STBL
-        self.mnFileIdentifier = None
+        self.mnFileIdentifier = 'STBL'
 
         # Base game version is 5
         self.mnVersion = 5
@@ -31,3 +31,13 @@ class StringTableHeader:
 
         self.mReserved = [data[15], data[16]]
         self.mnStringLength = struct.unpack('<I', data[17:21])[0]
+
+    def to_bytearray(self):
+        byte_data = bytearray([])
+        byte_data.extend(self.mnFileIdentifier.encode('ascii'))
+        byte_data.extend(struct.pack('<H', self.mnVersion))
+        byte_data.extend(bytearray([self.mbCompressed]))
+        byte_data.extend(struct.pack('<Q', self.mnNumEntries))
+        byte_data.extend(bytearray(self.mReserved))
+        byte_data.extend(struct.pack('<I', self.mnStringLength))
+        return byte_data

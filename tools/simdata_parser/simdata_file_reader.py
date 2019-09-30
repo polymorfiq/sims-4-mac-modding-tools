@@ -36,7 +36,7 @@ class SimdataFileReader:
     def get_headers(self):
         headers = SimdataFileHeader()
         headers.read(self.file_contents[:HEADER_SIZE])
-        if (headers.mnNumTables > 1): print(headers)
+        if headers.mnNumTables > 1: print(headers)
 
         return headers
 

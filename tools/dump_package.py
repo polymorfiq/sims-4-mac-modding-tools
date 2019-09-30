@@ -56,7 +56,7 @@ class PackageDumper:
             if index.mType == STRING_TABLE_TYPE:
                 reader = StringTableReader(None, record)
                 string_table = reader.parse()
-                PackageDumper.dump_resource('string_tables', index, record)
+                PackageDumper.dump_resource('string_tables', index, string_table.to_bytearray())
 
             elif index.mType in XML_TYPES:
                 parsed = etree.XML(record)
