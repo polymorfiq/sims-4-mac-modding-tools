@@ -32,5 +32,19 @@ class SimdataSchema:
 
             start_pos += SCHEMA_COLUMN_SIZE
 
+    def to_bytearray(self):
+        byte_data = bytearray([])
+        byte_data.extend(struct.pack('<i', self.mnNameOffset))
+        byte_data.extend(struct.pack('<I', self.mnNameHash))
+        byte_data.extend(struct.pack('<I', self.mnSchemaHash))
+        byte_data.extend(struct.pack('<I', self.mnSchemaSize))
+        byte_data.extend(struct.pack('<i', self.mnColumnOffset))
+        byte_data.extend(struct.pack('<I', self.mnNumColumns))
+
+        for column in self.columns:
+            byte_data.extend(column.to_bytearray())
+
+        return byte_data
+
     def size(self):
         return SCHEMA_HEADER_SIZE

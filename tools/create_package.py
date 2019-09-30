@@ -9,7 +9,7 @@ EXAMPLE_PACKAGE = './tmp/output.package'
 source_path = sys.argv[1] if len(sys.argv) >= 2 else EXAMPLE_SOURCE
 package_path = sys.argv[2] if len(sys.argv) >= 3 else EXAMPLE_PACKAGE
 
-writer = PackageFileWriter(package_path)
+writer = PackageFileWriter()
 
 for root, subdirs, files in os.walk(source_path):
     for filename in files:
@@ -35,4 +35,6 @@ for root, subdirs, files in os.walk(source_path):
 
             writer.add_resource(resource_type, resource_group, resource_instance_id, raw_data)
 
-writer.write_package_file()
+package_data = writer.to_bytearray()
+with open(package_path, 'w+b') as f:
+    f.write(package_data)

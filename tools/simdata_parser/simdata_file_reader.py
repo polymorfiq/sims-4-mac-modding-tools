@@ -120,7 +120,7 @@ class SimdataFileReader:
 
                         data_pos = aligned + column.mnOffset
                         data = self.read_data(data_pos, column.mnDataType)
-                        row = SimdataTableRow(name=string, data=data)
+                        row = SimdataTableRow(name=string, data=data, data_type=column.mnDataType)
                         table_data.rows.append(row)
 
                         column_alignment = alignment_for_type(column.mnDataType)

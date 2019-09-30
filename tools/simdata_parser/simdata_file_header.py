@@ -3,7 +3,7 @@ from .constants import MAGIC_NUMBER
 
 class SimdataFileHeader:
     def __init__(self):
-        self.mnFileIdentifier = None        # Should always be 'DATA'
+        self.mnFileIdentifier = 'DATA'      # Should always be 'DATA'
         self.mnVersion = None               # Base game version is 0x100
         self.mnTableHeaderOffset = None     # Offset of table header data
         self.mnNumTables = None             # Number of table headers
@@ -19,6 +19,17 @@ class SimdataFileHeader:
         self.mnNumTables = struct.unpack('<i', data[12:16])[0]
         self.mnSchemaOffset = struct.unpack('<i', data[16:20])[0]
         self.mnNumSchemas = struct.unpack('<i', data[20:24])[0]
+
+    def to_bytearray(self):
+        byte_data = bytearray([])
+        byte_data.extend(self.mnFileIdentifier.encode('ascii'))
+        byte_data.extend(struct.pack('<I', self.mnVersion))
+        byte_data.extend(struct.pack('<I', self.mnTableHeaderOffset))
+        byte_data.extend(struct.pack('<i', self.mnNumTables))
+        byte_data.extend(struct.pack('<i', self.mnSchemaOffset))
+        byte_data.extend(struct.pack('<i', self.mnNumSchemas))
+
+        return byte_data
 
     def __str__(self):
         return ("Simdata File Header: \n" +

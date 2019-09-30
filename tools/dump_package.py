@@ -51,7 +51,7 @@ class PackageDumper:
             if index.mType == SIMDATA_TYPE:
                 reader = SimdataFileReader(None, record)
                 simdata = reader.parse()
-                PackageDumper.dump_resource('simdata', index, record)
+                PackageDumper.dump_resource('simdata', index, simdata.to_bytearray())
 
             if index.mType == STRING_TABLE_TYPE:
                 reader = StringTableReader(None, record)

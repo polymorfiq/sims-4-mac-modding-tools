@@ -19,6 +19,17 @@ class SimdataTableInfo:
         self.mnRowOffset = struct.unpack('<i', data[20:24])[0]
         self.mnRowCount = struct.unpack('<I', data[24:28])[0]
 
+    def to_bytearray(self):
+        byte_data = bytearray([])
+        byte_data.extend(struct.pack('<i', self.mnNameOffset))
+        byte_data.extend(struct.pack('<I', self.mnNameHash))
+        byte_data.extend(struct.pack('<i', self.mnSchemaOffset))
+        byte_data.extend(struct.pack('<I', self.mnDataType))
+        byte_data.extend(struct.pack('<I', self.mnRowSize))
+        byte_data.extend(struct.pack('<i', self.mnRowOffset))
+        byte_data.extend(struct.pack('<I', self.mnRowCount))
+        return byte_data
+
     def __str__(self):
         return ("Simdata Table Info: \n" +
             f"  mnNameOffset: {self.mnNameOffset}\n" +

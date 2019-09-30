@@ -6,9 +6,7 @@ from .package_flags import PackageFlags
 from .package_index_entry import PackageIndexEntry
 
 class PackageFileWriter:
-    def __init__(self, package_path):
-        self.package_path = package_path
-
+    def __init__(self):
         self.headers = PackageFileHeader()
         self.headers.mnFileIdentifier = 'DBPF'
         self.headers.mnFileVersion = PackageVersion(major=2, minor=1)
@@ -44,7 +42,7 @@ class PackageFileWriter:
         self.records.append(compressed_data)
 
 
-    def write_package_file(self):
+    def to_bytearray(self):
         self.headers.mnIndexRecordEntryCount = len(self.index_entries)
         self.headers.mnIndexRecordPosition = self.headers.size() + len(self.record_data)
 
@@ -64,5 +62,4 @@ class PackageFileWriter:
         for index_entry in self.index_entries:
             raw_data.extend(index_entry.to_bytearray())
 
-        with open(self.package_path, 'w+b') as f:
-            f.write(raw_data)
+        return raw_data
