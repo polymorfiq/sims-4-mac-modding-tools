@@ -9,3 +9,4 @@ Steps to run:
 
 Useful commands:
 - `uncompyle6 -o uncompiled_python_dir *.pyc`
+- `uncompyle6 -o decompiled wickedwhims/**/*.pyc`
