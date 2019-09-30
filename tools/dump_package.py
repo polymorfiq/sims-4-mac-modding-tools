@@ -4,6 +4,7 @@ import lxml.etree as etree
 from package_parser import PackageFileReader
 from package_parser import resource_type_by_name
 from string_table_parser import StringTableReader
+from simdata_parser import SimdataFileReader
 
 EXAMPLE_PACKAGE = '../Documentation/TS4_Custom_Content_Guide/Examples/simsmodsquad-novelist.package'
 package_path = sys.argv[1] if len(sys.argv) >= 2 else EXAMPLE_PACKAGE
@@ -48,6 +49,8 @@ class PackageDumper:
 
         for (index, record) in zip(package.index_entries, package.records):
             if index.mType == SIMDATA_TYPE:
+                reader = SimdataFileReader(None, record)
+                simdata = reader.parse()
                 PackageDumper.dump_resource('simdata', index, record)
 
             if index.mType == STRING_TABLE_TYPE:

@@ -13,14 +13,14 @@ class StringTableReader:
         self.file_contents = file_contents
 
     def parse(self):
-        if self.file_path is not None: self.open()
+        self.open()
 
         try:
             self.string_table.headers = self.get_headers()
             self.string_table.strings = self.get_strings()
 
         finally:
-            if self.file_path is not None: self.close()
+            self.close()
 
         return self.string_table
 
@@ -47,9 +47,12 @@ class StringTableReader:
         return strings
 
     def open(self):
-        self.file = open(self.file_path, mode='rb')
-        self.file_contents = self.file.read()
+        if self.file_path is not None:
+            self.file = open(self.file_path, mode='rb')
+            self.file_contents = self.file.read()
 
     def close(self):
-        self.file.close()
-        self.file = None
+        if self.file_path is not None:
+            self.file.close()
+            self.file = None
+            self.file_contents = None
