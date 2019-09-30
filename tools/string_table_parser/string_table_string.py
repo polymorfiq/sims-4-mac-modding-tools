@@ -1,4 +1,5 @@
 import struct
+import binascii
 from fnvhash import fnv1_32
 
 class StringTableString:
@@ -20,6 +21,9 @@ class StringTableString:
         self.mnKeyHash = fnv1_32(data.encode('ascii')) if name is None else fnv1_32(name.encode('ascii'))
         self.mnLength = len(data)
         self.contents = data.encode('ascii')
+
+    def hash_str(self):
+        return '0x' + binascii.b2a_hex(struct.pack('>I', self.mnKeyHash)).decode('ascii')
 
     def contents_size(self):
         return self.mnLength

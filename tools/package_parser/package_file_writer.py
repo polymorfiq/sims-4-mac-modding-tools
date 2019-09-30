@@ -38,8 +38,6 @@ class PackageFileWriter:
             writer.to_bytearray()
         )
 
-        print(self.index_entries[1])
-
 
     def add_resource_file(self, file_path):
         filename = file_path.split('/')[-1]

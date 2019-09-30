@@ -29,5 +29,7 @@ class StringTableWriter:
         self.string_table.headers.mnNumEntries += 1
         self.string_table.headers.mnStringLength += string_item.contents_size()
 
+        return string_item
+
     def to_bytearray(self):
         return self.string_table.to_bytearray()
