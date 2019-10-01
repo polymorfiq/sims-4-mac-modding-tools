@@ -8,5 +8,6 @@ Steps to run:
 
 
 Useful commands:
-- `uncompyle6 -o uncompiled_python_dir *.pyc`
-- `uncompyle6 -o decompiled wickedwhims/**/*.pyc`
+- `uncompyle6 -o Sims4Files/decompiled_simulation Sims4Files/simulation/**/*.pyc`
+- `for f in $(find Sims4Files/simulation/ -name '*.pyc'); do local_replacement="${f/Sims4Files\//Sims4Files\/decompiled/}"; uncompyle6 -o ${local_replacement/\.pyc/\.py} $f; done`
+- `python -m compileall .`

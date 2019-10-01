@@ -106,3 +106,6 @@ venv.bak/
 .DS_Store
 /tools/tmp
 /tools/projects
+
+Sims4Files/*
+!Sims4Files/.keep
