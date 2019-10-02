@@ -4,3 +4,5 @@ services:
     build: .
     volumes:
       - .:/app
+      - ~/Documents/Electronic Arts/The Sims 4/:/sims
+      - ~/Applications/The Sims 4.app/Contents/:/sims_app

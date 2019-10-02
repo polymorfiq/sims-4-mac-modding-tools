@@ -1,0 +1,15 @@
+#!/bin/bash
+
+mkdir -p /app/Sims4Files/compiled/base
+mkdir -p /app/Sims4Files/compiled/core
+mkdir -p /app/Sims4Files/compiled/simulation
+mkdir -p /app/Sims4Files/decompiled/base
+mkdir -p /app/Sims4Files/decompiled/core
+mkdir -p /app/Sims4Files/decompiled/simulation
+
+unzip /sims_app/Data/Simulation/Gameplay/base.zip -d /app/Sims4Files/compiled/base
+unzip /sims_app/Data/Simulation/Gameplay/core.zip -d /app/Sims4Files/compiled/core
+unzip /sims_app/Data/Simulation/Gameplay/simulation.zip -d /app/Sims4Files/compiled/simulation
+
+
+for f in $(find /app/Sims4Files/compiled -name '*.pyc'); do local_replacement="${f/Sims4Files\/compiled\//Sims4Files\/decompiled/}"; uncompyle6 -o ${local_replacement/\.pyc/\.py} $f; done
