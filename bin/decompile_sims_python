@@ -1,5 +1,12 @@
 #!/bin/bash
 
+control_c() {
+    kill $PID
+    exit
+}
+
+trap control_c SIGINT
+
 mkdir -p /app/Sims4Files/compiled/base
 mkdir -p /app/Sims4Files/compiled/core
 mkdir -p /app/Sims4Files/compiled/simulation
