@@ -1,25 +1,30 @@
 import services
 import sims4.commands
-import sims4.collections
-import sims.sim_info
-from ui.ui_dialog import UiDialog
-from sims4.localization import LocalizationHelperTuning
-from ui.ui_dialog_picker import SimPickerRow, UiSimPicker
+import types
+from protocolbuffers import Consts_pb2
+from functools import wraps
 
 def mod_logger(func):
-    def wrapper():
+    @wraps(fn)
+    def wrapped(*args, **kwargs):
         client_id = services.client_manager().get_first_client_id()
         output = sims4.commands.CheatOutput(client_id)
 
         try:
-            func()
+            return fn(*args, **kwargs)
         except Exception as ex:
             output(str(ex))
 
-    return wrapper
+    return wrapped
 
+@sims4.commands.Command('getpopulation', command_type=sims4.commands.CommandType.Live)
 @mod_logger
+def getpop(_connection=None):
+    output = sims4.commands.CheatOutput(_connection)
+    output('Your town\'s population is {}'.format(len(services.sim_info_manager().get_all())))
+
 @sims4.commands.Command('you_did_it', command_type=sims4.commands.CommandType.Live)
+@mod_logger
 def sim_picker_dialog_test(_connection=None):
     output = sims4.commands.CheatOutput(_connection)
     client = services.client_manager().get_first_client()
