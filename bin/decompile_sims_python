@@ -19,4 +19,4 @@ unzip /sims_app/Data/Simulation/Gameplay/core.zip -d /app/Sims4Files/compiled/co
 unzip /sims_app/Data/Simulation/Gameplay/simulation.zip -d /app/Sims4Files/compiled/simulation
 
 
-for f in $(find /app/Sims4Files/compiled -name '*.pyc'); do local_replacement="${f/Sims4Files\/compiled\//Sims4Files\/decompiled/}"; uncompyle6 -o ${local_replacement/\.pyc/\.py} $f; done
+for f in $(find /app/Sims4Files/compiled -name '*.pyc'); do local_replacement="${f/Sims4Files\/compiled\//Sims4Files\/decompiled/}"; echo ${local_replacement/\.pyc/\.py} && mkdir -p "${local_replacement%/*}" && unpyc3.py $f > ${local_replacement/\.pyc/\.py}; done
