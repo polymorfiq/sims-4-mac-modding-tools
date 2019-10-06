@@ -8,14 +8,12 @@ from tuning_parser import TuningWriter
 
 writer = PackageFileWriter()
 
-
 string_writer = StringTableWriter('SPP_TEST_OBSERVE_ART')
 OBSERVE_ART = string_writer.add_string('Observe Art', name='SPP_TEST_OBSERVE_ART_STRING')
 
 tuning_writer = TuningWriter()
 tuning_writer.load_file('game_files/0xE882D22F_0x00000000_0x0000000000008357.art_View.InteractionTuning.xml')
 tuning_writer.xml.xpath("//*[@n='display_name']")[0].text = OBSERVE_ART.hash_str()
-
 
 writer.add_writer(string_writer)
 writer.add_writer(tuning_writer)
