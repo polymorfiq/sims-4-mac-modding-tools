@@ -3,8 +3,7 @@
 Steps to run:
 1. Install Docker
 2. Clone repo and `cd` into it
-2. Run `docker-compose build && docker-compose run app /bin/bash`
-3. In Docker, run `cd tools && python dump_package.py`
+3. Run `docker-compose build && docker-compose run app /bin/bash`
 
 
 Useful commands:
@@ -12,5 +11,10 @@ Useful commands:
 *Decompile Sims Python Files:*
 `decompile_sims_python`
 
-*Package your script and install in scripts folder:*
+*Package your script and automatically install in Mods folder:*
 `package_mod YOUR_SCRIPT_FOLDER your_script_name`
+
+*Unpackage a .package file*:
+`python tools/dump_package.py YOUR_PACKAGE.package`
+
+(Your package will be dumped to the tmp/data folder)
