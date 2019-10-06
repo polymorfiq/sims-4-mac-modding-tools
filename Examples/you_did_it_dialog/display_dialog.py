@@ -1,10 +1,14 @@
+import traceback
 import services
 import sims4.commands
 import types
 from protocolbuffers import Consts_pb2
 from functools import wraps
+from ui.ui_dialog_picker import UiSimPicker, SimPickerRow, ObjectPickerType
+from sims4.localization import LocalizationHelperTuning
+from distributor.shared_messages import IconInfoData
 
-def mod_logger(func):
+def mod_logger(fn):
     @wraps(fn)
     def wrapped(*args, **kwargs):
         client_id = services.client_manager().get_first_client_id()
@@ -13,7 +17,8 @@ def mod_logger(func):
         try:
             return fn(*args, **kwargs)
         except Exception as ex:
-            output(str(ex))
+            output(traceback.format_exc())
+
 
     return wrapped
 
@@ -47,4 +52,4 @@ def sim_picker_dialog_test(_connection=None):
         dialog.add_row(SimPickerRow(sim_info.sim_id, False, tag=sim_info.sim_id))
 
     dialog.add_listener(get_inputs_callback)
-    dialog.show_dialog(icon_override=(None, sim_info))
+    dialog.show_dialog(icon_override=IconInfoData(obj_instance=(sim_info)))
