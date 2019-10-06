@@ -1,7 +1,7 @@
 # sims_4_package_parser
 
 Steps to run:
-1. Install Docker
+1. Install [Docker](https://docs.docker.com/v17.09/engine/installation/#desktop)
 2. Clone repo and `cd` into it
 3. Run `docker-compose build && docker-compose run app /bin/bash`
 
