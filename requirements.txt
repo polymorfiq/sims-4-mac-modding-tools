@@ -1,6 +1,4 @@
-Click==7.0
+decompyle3==3.3.2
 fnvhash==0.1.0
 lxml==4.4.1
-spark-parser==1.8.9
-uncompyle6==3.4.0
-xdis==4.0.3
+Rx==3.0.1
