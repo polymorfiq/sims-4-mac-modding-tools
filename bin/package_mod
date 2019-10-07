@@ -1,4 +1,7 @@
 #!/bin/bash
 
-python -m compileall $1
-zip -j /sims/Mods/$2.ts4script $1/**/*.pyc $1/*.py
+python -m compileall -b $1
+pushd $1
+rm /sims/Mods/$2.ts4script
+zip -r /sims/Mods/$2.ts4script .
+popd
