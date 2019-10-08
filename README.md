@@ -11,6 +11,9 @@ Useful commands:
 *Decompile Sims Python Files:*
 `decompile_sims_python`
 
+*Decompile Sims Python Files:*
+`decompile_ts4script YOUR_SCRIPTS.ts4script OUTPUT_DIR`
+
 *Package your script and automatically install in Mods folder:*
 `package_mod YOUR_SCRIPT_FOLDER your_script_name`
 

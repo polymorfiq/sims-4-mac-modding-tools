@@ -63,14 +63,20 @@ class PackageIndexEntry:
         if self.flags.constantType == 0:
             self.mType = struct.unpack('<I', entry_data[start_pos:start_pos+4])[0]
             start_pos += 4
+        else:
+            self.mType = self.flags.constantTypeId
 
         if self.flags.constantGroup == 0:
             self.mGroup = struct.unpack('<I', entry_data[start_pos:start_pos+4])[0]
             start_pos += 4
+        else:
+            self.mGroup = self.flags.constantGroupId
 
         if self.flags.constantInstanceEx == 0:
             self.mInstanceEx = struct.unpack('<I', entry_data[start_pos:start_pos+4])[0]
             start_pos += 4
+        else:
+            self.mInstanceEx = self.flags.constantInstanceIdEx
 
         self.mInstance = struct.unpack('<I', entry_data[start_pos:start_pos+4])[0]
         self.mnPosition = struct.unpack('<I', entry_data[start_pos+4:start_pos+8])[0]
@@ -116,9 +122,14 @@ class PackageIndexEntry:
         return '0x' + binascii.b2a_hex(struct.pack('>I', self.mInstanceEx)).decode('ascii') + binascii.b2a_hex(struct.pack('>I', self.mInstance)).decode('ascii')
 
     def __str__(self):
+        comp_type = self.mnCompressionType if self.mnCompressionType is not None else "None"
+        committed = self.mnCommitted if self.mnCommitted is not None else "None"
+        print(comp_type, committed, self.mInstance, self.mInstanceEx)
+        self.instance_id()
+
         return ("PackageIndexEntry:\n" +
-            f"  mType: " + hex(self.mType) + "\n" +
-            f"  mGroup: " + hex(self.mGroup) + "\n" +
+            f"  mType: " + str(hex(self.mType)) + "\n" +
+            f"  mGroup: " + str(hex(self.mGroup)) + "\n" +
             f"  mInstanceEx: " + hex(self.mInstanceEx) + "\n" +
             f"  Instance ID: " + self.instance_id() + "\n" +
             f"  mInstance: " + hex(self.mInstance) + "\n" +
@@ -126,5 +137,5 @@ class PackageIndexEntry:
             f"  mnSize: {self.mnSize}\n" +
             f"  mbExtendedCompressionType: {self.mbExtendedCompressionType}\n" +
             f"  mnSizeDecompressed: {self.mnSizeDecompressed}\n" +
-            f"  mnCompressionType: {self.mnCompressionType}\n" +
-            f"  mnCommitted: {self.mnCommitted}\n")
+            f"  mnCompressionType: {comp_type}\n" +
+            f"  mnCommitted: {committed}\n")

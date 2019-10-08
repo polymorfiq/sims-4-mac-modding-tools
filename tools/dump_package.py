@@ -59,7 +59,11 @@ class PackageDumper:
                 PackageDumper.dump_resource('string_tables', index, string_table.to_bytearray())
 
             elif index.mType in XML_TYPES:
-                parsed = etree.XML(record)
+                try:
+                    parsed = etree.XML(record)
+                except:
+                    PackageDumper.dump_resource('various', index, record)
+                    continue
 
                 name = None
                 root_elem = parsed.xpath("/I")
@@ -88,6 +92,7 @@ class PackageDumper:
         if extension is not None: filepath += f".{extension}"
 
         PackageDumper.create_directory_if_needed(filepath)
+        print(filepath)
 
         with open(filepath, 'w+b') as f:
             f.write(record)

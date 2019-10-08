@@ -27,17 +27,38 @@ class GameInjector:
 
         observed = ObservedFunc(obj, fnc_name)
         def fnc_replacement(*args, **kwargs):
-            observed.start.publish(None)
-            ret_value = target_fnc(*args, **kwargs)
-            observed.end.publish(ret_value)
+            ctrl = FuncController(args, kwargs)
 
-            return ret_value
+            ret_value = None
+            observed.start.publish(None, ctrl)
+            if not ctrl.skip_call: ret_value = target_fnc(*ctrl.args, **ctrl.kwargs)
+            observed.end.publish(ret_value, ctrl)
+
+            return ctrl.return_value if hasattr(ctrl, 'return_value') else ret_value
 
         setattr(obj, fnc_name, inject(target_fnc, fnc_replacement))
 
         self.observed_funcs[observe_key] = observed
 
         return observed
+
+class FuncController:
+    def __init__(self, args, kwargs):
+        self.args = args
+        self.kwargs = kwargs
+        self.skip_call = False
+
+    def modify_args(self, new_args):
+        self.args = new_args
+
+    def modify_kwargs(self, new_kwargs):
+        self.kwargs = new_kwargs
+
+    def do_skip_call(self):
+        self.skip_call = True
+
+    def set_return_value(self, val):
+        self.return_value = val
 
 class ObservedFunc:
     def __init__(self, obj, fnc_name):
@@ -54,9 +75,9 @@ class Observable:
     def subscribe(self, cb):
         self.callbacks.append(cb)
 
-    def publish(self, data):
+    def publish(self, data, ctrl):
         for cb in self.callbacks:
-            cb(self.observed, data)
+            cb(self.observed, data, ctrl)
 
 def inject(target_function, new_function):
     @wraps(target_function)

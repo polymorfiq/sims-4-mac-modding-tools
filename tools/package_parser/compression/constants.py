@@ -1,6 +1,8 @@
 INTERNAL_COMPRESSION_TYPES = {
     0x10: "NORMAL1",
     0x40: "NORMAL2",
+    0xFB: "NORMAL3",
+    0x50: "NORMAL4",
     0x80: "LARGE",
 }
 

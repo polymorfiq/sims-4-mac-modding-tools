@@ -1,0 +1,15 @@
+#!/bin/bash
+
+control_c() {
+    kill $PID
+    exit
+}
+
+trap control_c SIGINT
+
+rm -rf /app/tools/tmp/decompile_dir
+mkdir -p /app/tools/tmp/decompile_dir
+unzip $1 -d /app/tools/tmp/decompile_dir
+
+
+for f in $(find /app/tools/tmp/decompile_dir -name '*.pyc'); do local_replacement="${f/\/app\/tools\/tmp\/decompile_dir/$2}"; echo ${local_replacement/\.pyc/\.py} && mkdir -p "${local_replacement%/*}" && decompyle3 $f > ${local_replacement/\.pyc/\.py}; done
