@@ -1,4 +1,4 @@
 decompyle3==3.3.2
 fnvhash==0.1.0
-lxml==4.4.1
+lxml==4.6.3
 Rx==3.0.1
